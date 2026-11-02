@@ -1,0 +1,33 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/chapters">Chapters</a><span>/</span><span>{{ chapter()?.name ?? 'Not found' }}</span>
+</div>
+@if (chapter(); as current) {
+  <section class="lab-hero lab-hero-compact">
+    <p class="lab-kicker">LEVEL 02 / 04 · CHAPTER {{ current.id }}</p>
+    <h1>{{ current.name }}</h1>
+    <p>{{ current.topics.length }} topics from the published Techlambda course outline</p>
+    @if (demoCount(current.id) > 0) { <p class="lab-hook">{{ demoCount(current.id) }} executable examples</p> }
+  </section>
+  <section class="lab-section">
+    <div class="lab-section-heading"><h2>Choose your topic</h2><span class="lab-count">Then select a subtopic</span></div>
+    <div class="lab-topic-list" data-testid="topic-list">
+      @for (topic of current.topics; track topic.id; let i=$index) {
+        <a class="lab-topic-row" [routerLink]="['/chapters',current.id,topic.id]"
+          [attr.data-testid]="'course-topic-' + topic.id">
+          <span class="lab-topic-number">{{ i+1 }}</span>
+          <span class="lab-topic-copy">
+            <strong>{{ topic.name }}</strong>
+            <span>{{ topic.subtopics.length }} subtopics</span>
+          </span>
+          <span class="lab-topic-arrow" aria-hidden="true">→</span>
+        </a>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="lab-section"><h1>Chapter not found</h1>
+    <p>There is no chapter with that number. Choose one from the curriculum.</p>
+    <a routerLink="/chapters">Return to chapters</a>
+  </section>
+}
+

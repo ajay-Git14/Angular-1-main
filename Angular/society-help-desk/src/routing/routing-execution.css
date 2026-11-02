@@ -1,0 +1,32 @@
+/* Global Chapter 07 styles also apply to router-created child/guard/lazy components. */
+.route-workspace{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:1.15rem;margin:1.25rem 0;align-items:start}
+.route-playground,.route-study,.route-sample{min-width:0;padding:1.35rem;border:1px solid #d7e5f0;border-radius:14px;background:#fff;box-shadow:0 7px 22px #12436810}
+.route-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem}
+.route-head h2,.route-study h2{margin:0;font-size:1.18rem;color:#1b3a56}
+.route-head span{padding:.35rem .7rem;border-radius:99px;background:#e4f6ed;color:#186b3e;font-size:.8rem;font-weight:750}
+.route-instruction{background:#fff7e8;border-left:4px solid #de944a;border-radius:6px;padding:1rem;line-height:1.6}
+.route-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+.route-actions a,.route-actions button,.route-playground>button,.route-sample button{
+ padding:.65rem .85rem;background:#205b8d;color:#fff!important;border:0;border-radius:8px;
+ font:inherit;font-size:.87rem;font-weight:650;cursor:pointer;text-decoration:none}
+.route-actions a:hover,.route-actions button:hover,.route-playground>button:hover{background:#163e62}
+.route-actions a.route-active{background:#165c3c;border:2px solid #9bddb9}
+.route-playground label,.route-sample label{display:flex;flex-direction:column;gap:.4rem;color:#385975;font-weight:650;margin:.6rem 0}
+.route-playground input,.route-playground select,.route-sample input{max-width:100%;min-height:40px;border:1px solid #a9bfd1;border-radius:8px;padding:.6rem;font:inherit}
+.route-live-result{background:#edf9f2;border:1px solid #cde9d8;color:#1b4c32;padding:1rem;border-radius:10px;margin:1.25rem 0}
+.route-live-result ul{padding-left:1.2rem}.route-live-result li{overflow-wrap:anywhere}
+.route-stats{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.route-stats span{background:#edf3f9;padding:.45rem .6rem;border-radius:7px;font-size:.87rem}
+.route-study{position:sticky;top:1rem}
+.route-study h3{font-size:.98rem;margin:1.2rem 0 .45rem}
+.route-study p,.route-sample p{line-height:1.6}
+.route-study pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:400px;overflow:auto;background:#142c42;color:#f1f8fc;font-size:.82rem;border-radius:8px;padding:1rem;line-height:1.6}
+.route-study a{overflow-wrap:anywhere}
+.route-study small,.route-caption{color:#63778b}
+.route-eyebrow{color:#58748f;font-size:.78rem;letter-spacing:.035em;font-weight:750;text-transform:uppercase}
+.route-sample{margin:1.2rem auto;max-width:980px}
+.route-child-outlet{border:2px dashed #9fbed7;padding:1rem;border-radius:10px;margin:1rem 0;background:#f5faff}
+.route-sample a:not(.route-actions a){overflow-wrap:anywhere}
+@media(max-width:860px){.route-workspace{grid-template-columns:1fr}.route-study{position:static}}
+@media(max-width:480px){.route-playground,.route-study,.route-sample{padding:1rem}.route-actions a,.route-actions button{flex:1 1 100%}}
+

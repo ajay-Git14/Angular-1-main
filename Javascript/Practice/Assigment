@@ -1,0 +1,79 @@
+function outerclosr(){
+    let coursename = "Angular";
+    return function innerclosr(){
+        console.log(coursename);
+    }
+    return innerclosr();
+}
+    let result = outerclosr();
+    result();
+
+
+    function outer(){
+        let count=0;
+        return function inner(){
+            count++;
+            console.log(count);
+        };
+    }
+    let increment = outer();
+    increment();
+    increment();
+    increment();
+    increment();
+
+
+    function outerEmpinfo(){
+        let name = "Abhishek";
+        let Designation = "Sales Manager";
+        return function innerEmpinfo(){
+            console.log(name + " " + Designation);
+        };
+        return innerEmpinfo();
+    }
+    let res = outerEmpinfo();
+    res();
+    
+    function outerc(){
+       let count = 0;
+       return function innerc(){
+        count++;
+        console.log(count);
+       };
+       return innerc();
+    }
+    let incr = outerc();
+    let incr2 = outerc();
+    incr();
+    incr();
+    incr();
+    incr2();
+    incr2();
+
+    function ordertracker(){
+        let countorders=0;
+        return function innerorder(){
+            countorders++;
+            console.log("Total Orders : " + countorders);
+        };
+        return innerorder();
+    }
+    let addorder = ordertracker();
+
+    addorder();
+    addorder();
+    addorder();
+
+ function attendanceCounter() {
+    let count = 0; 
+    return function () {
+        count++; 
+        console.log("Attendance Count:", count); 
+    };
+}
+
+const markAttendance = attendanceCounter();
+
+markAttendance(); 
+markAttendance(); 
+markAttendance();

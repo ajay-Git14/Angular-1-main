@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "strict": true,
+    "experimentalDecorators": false,
+    "rootDir": "src/standard",
+    "outDir": "dist/standard",
+    "skipLibCheck": true
+  },
+  "include": ["src/standard/**/*.ts"]
+}

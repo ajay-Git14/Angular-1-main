@@ -1,0 +1,445 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/chapters">Chapters</a><span>/</span>
+  <a routerLink="/chapters/04">04 · Forms</a><span>/</span>
+  @if (topic(); as current) {
+    <a [routerLink]="['/chapters','04',current.id]">{{ current.name }}</a><span>/</span>
+  }
+  <span>{{ subtopic()?.name ?? 'Not found' }}</span>
+</div>
+
+@if (topic(); as current) {
+  @if (subtopic(); as lesson) {
+    <section class="lab-demo-header forms-header">
+      <div>
+        <p class="lab-kicker">CHAPTER 04 · LEVEL 04 / 04 · EXECUTION</p>
+        <h1>{{ lesson.name }}</h1>
+        <p><strong>{{ current.name }}</strong> · Society Help Desk practical</p>
+        <p class="lab-hook">{{ note()?.hook ?? 'Input → Form model → Validation → Feedback' }}</p>
+      </div>
+      <button type="button" class="lab-outline-button" (click)="reset()">Reset all controls</button>
+    </section>
+
+    <div class="forms-workspace">
+      <section class="forms-playground" aria-label="Angular Forms execution">
+        <div class="forms-panel-head"><h2>Try the working example</h2><span>Live Angular</span></div>
+        <p class="forms-instruction">{{ note()?.action ?? 'Change a control and observe the value or validation state.' }}</p>
+
+        @switch (current.id) {
+          @case ('forms') {
+            <p class="forms-caption">Native HTML controls → submit event. No server request is made.</p>
+            <form ngNoForm (submit)="submitNative($event)" class="forms-demo-form" data-testid="forms-native">
+              @if (labNumber() === 6) {
+                <label>Textbox
+                  <input name="search" [value]="model.resident" (input)="model.resident=readValue($event)" />
+                </label>
+              } @else if (labNumber() === 7) {
+                <label>Textarea
+                  <textarea name="details" [value]="model.details"
+                    (input)="model.details=readValue($event)"></textarea>
+                </label>
+              } @else if (labNumber() === 8) {
+                <label>Dropdown
+                  <select [value]="model.priority" (change)="model.priority=readValue($event)">
+                    <option>Low</option><option>Medium</option><option>High</option>
+                  </select>
+                </label>
+              } @else if (labNumber() === 9) {
+                <label class="forms-check"><input type="checkbox" [checked]="model.accept"
+                  (change)="model.accept=readChecked($event)" /> Resident accepted policy</label>
+              } @else if (labNumber() === 10) {
+                <fieldset><legend>Priority — radio buttons</legend>
+                  @for (option of ['Low','Medium','High']; track option) {
+                    <label class="forms-radio">
+                      <input type="radio" name="priority" [value]="option"
+                        [checked]="model.priority===option" (change)="model.priority=option" />{{ option }}
+                    </label>
+                  }
+                </fieldset>
+              } @else {
+                <label>{{ labNumber() === 15 ? 'Search Complaint' : 'Resident / user name' }}
+                  <input name="resident" [value]="model.resident"
+                    (input)="model.resident=readValue($event)" required />
+                </label>
+                <label>{{ labNumber() === 4 ? 'Login email' : 'Email or flat number' }}
+                  <input name="email" type="email" [value]="model.email"
+                    (input)="model.email=readValue($event)" placeholder="resident@example.test" />
+                </label>
+                @if (labNumber() === 4) {
+                  <label>Password (masked)
+                    <input name="password" type="password" autocomplete="off" [value]="model.password"
+                      (input)="model.password=readValue($event)" />
+                  </label>
+                } @else {
+                  <label>Complaint description
+                    <textarea name="details" [value]="model.details"
+                      (input)="model.details=readValue($event)"></textarea>
+                  </label>
+                }
+              }
+              <button type="submit">{{ labNumber() === 15 ? 'Search locally' : 'Submit sample form' }}</button>
+            </form>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>Live input and submit output</strong>
+              <pre>{{ safeModel() | json }}</pre>
+              <p>{{ nativeStatus() }}</p>
+              @if (submitted()) { <pre>{{ submitted() }}</pre> }
+            </div>
+          }
+
+          @case ('user-input') {
+            <p class="forms-caption">HTML control types + Angular input, keyup and change events.</p>
+            <div class="forms-demo-form" data-testid="forms-user-input">
+              @switch (labNumber()) {
+                @case (3) {
+                  <label>Email input <input type="email" [value]="model.email"
+                    (input)="model.email=readValue($event);updateInput($event)" /></label>
+                }
+                @case (4) {
+                  <label>Password (masked and excluded from preview)
+                    <input type="password" autocomplete="off"
+                      (input)="model.password=readValue($event)" /></label>
+                }
+                @case (5) {
+                  <label>Address <textarea [value]="model.details"
+                    (input)="model.details=readValue($event)"></textarea></label>
+                }
+                @case (6) {
+                  <label>Complaint description <textarea [value]="model.details"
+                    (input)="model.details=readValue($event)"></textarea></label>
+                }
+                @case (7) {
+                  <label class="forms-check"><input type="checkbox" [checked]="model.accept"
+                    (change)="model.accept=readChecked($event)" /> Give permission</label>
+                }
+                @case (8) {
+                  <label class="forms-check"><input type="checkbox" [checked]="model.accept"
+                    (change)="model.accept=readChecked($event)" /> Accept terms</label>
+                }
+                @case (9) {
+                  <fieldset><legend>Resident role — choose one</legend>
+                    @for (option of ['Resident','Staff','Admin']; track option) {
+                      <label class="forms-radio"><input type="radio" name="userRole" [value]="option"
+                        [checked]="model.category===option" (change)="model.category=option" />{{ option }}</label>
+                    }
+                  </fieldset>
+                }
+                @case (10) {
+                  <label>Technology <select [value]="model.category"
+                    (change)="model.category=readValue($event);updateChange($event)">
+                    <option>Water</option><option>Lift</option><option>Parking</option>
+                  </select></label>
+                }
+                @case (11) {
+                  <label>Complaint category <select [value]="model.category"
+                    (change)="model.category=readValue($event);updateChange($event)">
+                    <option>Water</option><option>Security</option><option>Parking</option>
+                  </select></label>
+                }
+                @case (12) {
+                  <label>Choose date <input type="date" [value]="model.visitDate"
+                    (change)="model.visitDate=readValue($event)" /></label>
+                }
+                @case (13) {
+                  <label>Select file (local only) <input type="file"
+                    (change)="chooseFile($event)" /></label>
+                }
+                @case (14) {
+                  <label>Complaint attachment (filename only) <input type="file"
+                    (change)="chooseFile($event)" /></label>
+                }
+                @case (16) {
+                  <label>Keyup event <input (keyup)="updateKey($event)"
+                    (input)="model.resident=readValue($event)" /></label>
+                }
+                @case (17) {
+                  <label>Change event <select (change)="updateChange($event)">
+                    <option value="">Choose</option><option>Angular</option><option>React</option>
+                  </select></label>
+                }
+                @default {
+                  <label>{{ labNumber() === 15 ? 'Input event' : 'Resident input' }}
+                    <input type="text" [value]="model.resident"
+                      (input)="model.resident=readValue($event);updateInput($event)"
+                      (keyup)="updateKey($event)" /></label>
+                  @if (labNumber() >= 18) {
+                    <label>Complaint title <input [value]="model.title"
+                      (input)="model.title=readValue($event)" /></label>
+                    <label>Category <select [value]="model.category"
+                      (change)="model.category=readValue($event)">
+                      <option>Water</option><option>Lift</option><option>Parking</option>
+                    </select></label>
+                    <label>Visit date <input type="date" [value]="model.visitDate"
+                      (change)="model.visitDate=readValue($event)" /></label>
+                    <label>Optional KYC/demo attachment (filename only)
+                      <input type="file" (change)="chooseFile($event)" />
+                    </label>
+                    <p>{{ fileName() }}</p>
+                  }
+                }
+              }
+            </div>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>Observed input</strong><pre>{{ safeModel() | json }}</pre>
+              <p>{{ inputEvent() }} · {{ keyEvent() }} · {{ changedSelection() }}</p>
+              <p>{{ fileName() }}</p>
+            </div>
+          }
+
+          @case ('template-driven-forms') {
+            <p class="forms-caption">FormsModule → ngForm → ngModel → field state → ngSubmit.</p>
+            <form #templateForm="ngForm" (ngSubmit)="submitTemplate(templateForm)"
+              class="forms-demo-form" data-testid="forms-template">
+              <label>Resident name
+                <input name="resident" required minlength="2"
+                  [(ngModel)]="model.resident" #residentModel="ngModel" />
+              </label>
+              @if (residentModel.invalid && residentModel.touched) {
+                <small class="forms-error" role="alert">Resident name is required (minimum two characters).</small>
+              }
+              <label>Email address
+                <input name="email" type="email" required email
+                  [(ngModel)]="model.email" #emailModel="ngModel" />
+              </label>
+              @if (emailModel.invalid && emailModel.touched) {
+                <small class="forms-error" role="alert">Provide a valid email address.</small>
+              }
+              <label>Complaint category
+                <select name="category" [(ngModel)]="model.category">
+                  <option>Water</option><option>Lift</option><option>Parking</option>
+                </select>
+              </label>
+              @if (labNumber() === 19) {
+                <label>Training password (masked)
+                  <input type="password" name="password" required minlength="6"
+                    autocomplete="off" [(ngModel)]="model.password" />
+                </label>
+              }
+              <button type="submit" [disabled]="templateForm.invalid">Submit ngForm locally</button>
+              <button type="button" class="forms-secondary" (click)="templateForm.resetForm()">Reset ngForm</button>
+              <div class="forms-states">
+                <span>touched: {{ residentModel.touched }}</span><span>untouched: {{ residentModel.untouched }}</span>
+                <span>dirty: {{ residentModel.dirty }}</span><span>pristine: {{ residentModel.pristine }}</span>
+                <span>valid: {{ templateForm.valid }}</span><span>invalid: {{ templateForm.invalid }}</span>
+              </div>
+            </form>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>ngForm values (password excluded)</strong>
+              <pre>{{ safeModel() | json }}</pre>
+              <p>{{ submitted() }}</p>
+            </div>
+          }
+
+          @case ('reactive-forms') {
+            <p class="forms-caption">ReactiveFormsModule → typed FormControl/FormGroup → FormArray/Validators.</p>
+            <form [formGroup]="reactiveForm" (ngSubmit)="submitReactive()"
+              class="forms-demo-form" data-testid="forms-reactive">
+              @if (labNumber() === 1) {
+                <label>Standalone FormControl
+                  <input [formControl]="singleControl" placeholder="Type and see the control value" />
+                </label>
+                <p>FormControl.value: {{ singleControl.value }} · dirty: {{ singleControl.dirty }}</p>
+              }
+              <label>Resident name <input formControlName="resident" /></label>
+              <label>Email <input type="email" formControlName="email" /></label>
+              <label>Flat code (A-123) <input formControlName="flat" /></label>
+              <label>Complaint title <input formControlName="title" /></label>
+              @if (labNumber() >= 15) {
+                <label>Complaint description <textarea formControlName="details"></textarea></label>
+                <label>Department <input formControlName="department" /></label>
+                <label>Course <input formControlName="course" /></label>
+              }
+              @if (labNumber() === 17) {
+                <label>Demo password <input type="password" autocomplete="new-password"
+                  formControlName="password" /></label>
+                <label>Confirm demo password <input type="password" autocomplete="new-password"
+                  formControlName="confirmPassword" /></label>
+                @if (reactiveForm.hasError('passwordMismatch')) {
+                  <small class="forms-error" role="alert">Passwords must match.</small>
+                }
+              }
+              <div formArrayName="skills" class="forms-skill-list">
+                <strong>FormArray — dynamic skills</strong>
+                @for (skill of skills.controls; track skill; let i=$index) {
+                  <div class="forms-skill-row">
+                    <input [formControlName]="i" [attr.aria-label]="'Skill ' + (i+1)" />
+                    <button type="button" class="forms-secondary"
+                      [disabled]="skills.length === 1" (click)="removeSkill(i)">Remove</button>
+                  </div>
+                }
+              </div>
+              <button type="button" class="forms-secondary" (click)="addSkill()">Add FormArray control</button>
+              <button type="button" class="forms-secondary" (click)="fillReactive()">setValue()</button>
+              <button type="button" class="forms-secondary" (click)="patchReactive()">patchValue()</button>
+              <button type="submit">Validate and submit locally</button>
+              <div class="forms-states">
+                <span>valid: {{ reactiveForm.valid }}</span><span>dirty: {{ reactiveForm.dirty }}</span>
+                <span>touched: {{ reactiveForm.touched }}</span><span>skills: {{ skills.length }}</span>
+              </div>
+            </form>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>Reactive form model (non-sensitive fields)</strong>
+              <pre>{{ reactiveLatest() }}</pre><p>{{ submitted() }}</p>
+            </div>
+          }
+
+          @case ('form-validation') {
+            <p class="forms-caption">Required, min/max length, email, mobile pattern, custom flat, cross-field check.</p>
+            <form [formGroup]="validationForm" (ngSubmit)="submitValidation()"
+              class="forms-demo-form" data-testid="forms-validation">
+              <label>Resident name (3–30 characters)
+                <input formControlName="resident" />
+              </label>
+              @if (validationForm.controls.resident.touched && validationForm.controls.resident.invalid) {
+                <small class="forms-error" role="alert">Resident name required; 3–30 characters.</small>
+              }
+              <label>Email address
+                <input formControlName="email" type="email" />
+              </label>
+              @if (validationForm.controls.email.touched && validationForm.controls.email.invalid) {
+                <small class="forms-error" role="alert">Email required and must have a valid format.</small>
+              }
+              <label>Ten-digit mobile number
+                <input formControlName="mobile" inputmode="numeric" />
+              </label>
+              @if (validationForm.controls.mobile.touched && validationForm.controls.mobile.invalid) {
+                <small class="forms-error" role="alert">Enter exactly ten digits.</small>
+              }
+              <label>Flat number (e.g. A-101)
+                <input formControlName="flat" />
+              </label>
+              @if (validationForm.controls.flat.touched && validationForm.controls.flat.invalid) {
+                <small class="forms-error" role="alert">Flat code must be A- followed by 3 digits.</small>
+              }
+              <label>Password for validation demo
+                <input type="password" formControlName="password" autocomplete="new-password" />
+              </label>
+              @if (validationForm.controls.password.touched && validationForm.controls.password.invalid) {
+                <small class="forms-error" role="alert">Password must be at least six characters.</small>
+              }
+              <label>Confirm password
+                <input type="password" formControlName="confirmPassword" autocomplete="new-password" />
+              </label>
+              @if (validationForm.hasError('passwordMismatch') &&
+                (validationForm.controls.confirmPassword.touched || validationForm.controls.confirmPassword.dirty)) {
+                <small class="forms-error" role="alert">Passwords must match.</small>
+              }
+              <button type="submit">Check validation</button>
+              <div class="forms-states">
+                <span>valid: {{ validationForm.valid }}</span>
+                <span>invalid: {{ validationForm.invalid }}</span>
+                <span>touched: {{ validationForm.touched }}</span>
+                <span>dirty: {{ validationForm.dirty }}</span>
+              </div>
+            </form>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>Validation status (no passwords displayed)</strong>
+              <p>Group errors: {{ validationForm.errors | json }}</p>
+              <p>{{ submitted() }}</p>
+            </div>
+          }
+
+          @case ('dynamic-forms') {
+            <p class="forms-caption">Metadata → FormRecord → generated fields → validators → local preview.</p>
+            <div class="forms-toolbar">
+              <button type="button" (click)="addDynamicField()">Add optional question</button>
+              <button type="button" class="forms-secondary" (click)="patchDynamic()">patchValue()</button>
+              <button type="button" class="forms-secondary" (click)="addChecklist()">Add checklist item</button>
+            </div>
+            <form [formGroup]="dynamicForm" (ngSubmit)="submitDynamic()"
+              class="forms-demo-form" data-testid="forms-dynamic">
+              @for (field of fields(); track field.key) {
+                <div class="forms-field">
+                  <label [for]="'dynamic-'+field.key">
+                    {{ field.label }} {{ field.required ? '(required)' : '(optional)' }}
+                  </label>
+                  @switch (field.kind) {
+                    @case ('select') {
+                      <select [id]="'dynamic-'+field.key" [formControlName]="field.key"
+                        (change)="onDynamicCategoryChanged(field.key,$event)">
+                        @for (option of field.options ?? []; track option) {
+                          <option [value]="option">{{ option }}</option>
+                        }
+                      </select>
+                    }
+                    @case ('textarea') {
+                      <textarea [id]="'dynamic-'+field.key" [formControlName]="field.key"></textarea>
+                    }
+                    @case ('email') {
+                      <input type="email" [id]="'dynamic-'+field.key" [formControlName]="field.key" />
+                    }
+                    @case ('date') {
+                      <input type="date" [id]="'dynamic-'+field.key" [formControlName]="field.key" />
+                    }
+                    @default {
+                      <input type="text" [id]="'dynamic-'+field.key" [formControlName]="field.key" />
+                    }
+                  }
+                  @if (dynamicForm.get(field.key)?.touched && dynamicForm.get(field.key)?.hasError('required')) {
+                    <small class="forms-error" role="alert">This field is required.</small>
+                  }
+                  <div class="forms-field-actions">
+                    <button type="button" class="forms-secondary"
+                      (click)="toggleDynamicRequired(field.key)">Toggle required</button>
+                    @if (field.key.startsWith('custom')) {
+                      <button type="button" class="forms-secondary"
+                        (click)="removeDynamicField(field.key)">Remove question</button>
+                    }
+                  </div>
+                </div>
+              }
+              <button type="submit">Validate dynamic form locally</button>
+              <p>FormRecord valid: {{ dynamicForm.valid }} · question count: {{ fields().length }}</p>
+            </form>
+            <div class="forms-checklist">
+              <strong>Separate FormArray checklist</strong>
+              @for (check of checklist.controls; track check; let i=$index) {
+                <div class="forms-skill-row">
+                  <input [formControl]="check" [attr.aria-label]="'Checklist ' + (i+1)" />
+                  <button type="button" class="forms-secondary" (click)="removeChecklist(i)"
+                    [disabled]="checklist.length === 1">Remove</button>
+                </div>
+              }
+            </div>
+            <div class="forms-live-result" data-testid="forms-output">
+              <strong>Generated form state</strong>
+              <pre>{{ dynamicForm.getRawValue() | json }}</pre>
+              <p>{{ submitted() }}</p>
+            </div>
+          }
+        }
+      </section>
+
+      <aside class="forms-teaching" aria-label="Chapter 04 detailed explanation">
+        <h2>Concept and code</h2>
+        <p class="forms-eyebrow">Topic {{ current.name }} · Lab {{ labNumber() }}</p>
+        <p>{{ note()?.explanation ?? 'Use the form controls and observe live Angular state.' }}</p>
+        <h3>Source example</h3>
+        <pre class="forms-code"><code>{{ note()?.snippet ?? 'Read the linked original lesson for the guided code.' }}</code></pre>
+        <h3>Expected effect</h3>
+        <p>{{ note()?.expected ?? 'The Angular form state changes when you interact.' }}</p>
+        <h3>Memory hook</h3>
+        <p>{{ note()?.hook ?? 'Control → model → view' }}</p>
+        <h3>Evidence and reference</h3>
+        <p>Capture before/after input, error messages, and terminal build output.</p>
+        <p><a [href]="current.source" target="_blank" rel="noopener noreferrer">
+          Read original course Topic {{ current.name }} ↗</a></p>
+        @if (subtopic()?.detailFile; as detail) {
+          <p><a [href]="detail" target="_blank" rel="noopener noreferrer">
+            Open dedicated execution detail file ↗</a></p>
+        }
+        <small>Only demonstration data is handled here. No remote API or file upload occurs.</small>
+      </aside>
+    </div>
+    <nav class="lab-bottom-nav" aria-label="Forms lab navigation">
+      <a [routerLink]="['/chapters','04',current.id]">← All {{ current.name }} subtopics</a>
+      <a routerLink="/chapters/04">All Chapter 04 topics →</a>
+    </nav>
+  } @else {
+    <section class="lab-section"><h1>Forms subtopic not found</h1>
+      <a routerLink="/chapters/04">Choose another Forms topic</a></section>
+  }
+} @else {
+  <section class="lab-section"><h1>Forms topic not found</h1>
+    <a routerLink="/chapters/04">Return to Chapter 04</a></section>
+}
+

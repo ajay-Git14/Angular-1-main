@@ -1,0 +1,13 @@
+<section class="route-sample"><h1>Society Help Desk nested portal</h1>
+<p>The parent stays mounted as child routes render below.</p>
+<nav class="route-actions">
+<a routerLink="complaints" routerLinkActive="route-active">Complaints</a>
+<a routerLink="residents" routerLinkActive="route-active">Residents</a>
+<a routerLink="reports" routerLinkActive="route-active">Reports</a>
+<a routerLink="reports/monthly" routerLinkActive="route-active">Monthly reports</a>
+<a routerLink="complaints/501" routerLinkActive="route-active">Complaint 501</a>
+<a routerLink="settings" routerLinkActive="route-active">Settings</a>
+</nav>
+<div class="route-child-outlet" data-testid="chapter7-child-outlet">
+<p>Child router-outlet:</p><router-outlet /></div>
+<a routerLink="/chapters/07">Back to Chapter 07</a></section>

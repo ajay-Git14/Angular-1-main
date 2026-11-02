@@ -1,0 +1,45 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/chapters">Chapters</a><span>/</span>
+  @if (chapter(); as current) {
+    <a [routerLink]="['/chapters',current.id]">{{ current.name }}</a>
+  }
+  <span>/</span><span>{{ topic()?.name ?? 'Not found' }}</span>
+</div>
+@if (chapter(); as current) {
+  @if (topic(); as selected) {
+    <section class="lab-hero lab-hero-compact">
+      <p class="lab-kicker">LEVEL 03 / 04 · CHAPTER {{ current.id }}</p>
+      <h1>{{ selected.name }}</h1>
+      <p>Choose a subtopic below. Each live example includes controls, visual effect, code and explanation.</p>
+    </section>
+    <section class="lab-section">
+      <div class="lab-section-heading">
+        <h2>Subtopics and practical exercises</h2>
+        <a [href]="selected.source" target="_blank" rel="noopener noreferrer">Read original course topic ↗</a>
+      </div>
+      <div class="lab-topic-list" data-testid="subtopic-list">
+        @for (subtopic of selected.subtopics; track subtopic.id; let i=$index) {
+          <a class="lab-topic-row" [routerLink]="['/chapters',current.id,selected.id,subtopic.id]"
+            [attr.data-testid]="'course-subtopic-' + subtopic.id">
+            <span class="lab-topic-number">{{ i+1 }}</span>
+            <span class="lab-topic-copy">
+              <strong>{{ subtopic.name }}</strong>
+              @if (subtopic.kind === 'live') {
+                <span>Runnable Angular demonstration with interactive output</span>
+              } @else {
+                <span>Course reading and practice notes · interactive execution not implemented</span>
+              }
+            </span>
+            <span class="lab-topic-state">{{ subtopic.kind === 'live' ? 'Live demo' : 'Reading' }}</span>
+            <span class="lab-topic-arrow" aria-hidden="true">→</span>
+          </a>
+        }
+      </div>
+    </section>
+  } @else {
+    <section class="lab-section"><h1>Topic not found</h1><a [routerLink]="['/chapters',current.id]">Back to topics</a></section>
+  }
+} @else {
+  <section class="lab-section"><h1>Chapter not found</h1><a routerLink="/chapters">Back to chapters</a></section>
+}
+

@@ -1,0 +1,15 @@
+{
+  "name": "typescript-decorators-working-examples",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Verified legacy and modern TypeScript decorators labs",
+  "scripts": {
+    "build:legacy": "tsc -p tsconfig.legacy.json",
+    "build:standard": "tsc -p tsconfig.standard.json",
+    "build": "npm run build:legacy && npm run build:standard",
+    "test": "npm run build && node test/check-outputs.js",
+    "start:legacy": "npm run build:legacy && node dist/legacy/01-logger.js",
+    "start:standard": "npm run build:standard && node dist/standard/01-standard-decorators.js"
+  },
+  "devDependencies": { "typescript": "^5.8.3" }
+}

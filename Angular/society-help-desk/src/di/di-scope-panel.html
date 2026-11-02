@@ -1,0 +1,11 @@
+<article class="di-scope-card">
+  <h3>{{ label() }}</h3>
+  <p>Root singleton ID: <strong>{{ root.identity }}</strong></p>
+  <p>Root count: <strong>{{ root.count() }}</strong></p>
+  <button type="button" (click)="root.increment()">Increase shared root count</button>
+  <p>Local instance ID: <strong>{{ local.identity }}</strong></p>
+  <p>Local count: <strong>{{ local.count() }}</strong></p>
+  <button type="button" (click)="local.increment()">Increase ONLY this desk</button>
+  <small>{{ scopedLabel }}</small>
+</article>
+

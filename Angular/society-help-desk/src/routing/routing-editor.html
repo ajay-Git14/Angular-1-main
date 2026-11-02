@@ -1,0 +1,6 @@
+<section class="route-sample"><h1>CanDeactivate: unsaved changes</h1>
+<label>Fictitious note <input [value]="note()" (input)="changeNote($event)" /></label>
+<p>Unsaved: {{ isDirty() }}</p>
+<button type="button" (click)="save()">Mark saved</button>
+<a routerLink="/chapters/07/route-guards">Try leaving this page</a>
+<p>If the note is unsaved, Cancel keeps this screen open.</p></section>

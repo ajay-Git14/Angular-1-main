@@ -1,0 +1,40 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/lab">← All categories</a><span>/</span><span>{{ category()?.title ?? 'Category' }}</span>
+</div>
+@if (category(); as current) {
+  <section class="lab-hero lab-hero-compact">
+    <span class="lab-category-icon" aria-hidden="true">{{ current.icon }}</span>
+    <p class="lab-kicker">SCREEN 02 / 03</p>
+    <h1>{{ current.title }} — Choose a topic</h1>
+    <p>{{ current.subtitle }}</p>
+    <p class="lab-hook">{{ current.analogy }}</p>
+  </section>
+  <section class="lab-section">
+    <div class="lab-section-heading">
+      <h2>{{ topics().length }} live demos</h2>
+      <span class="lab-count">Click to see the actual effect</span>
+    </div>
+    <div class="lab-topic-list">
+      @for (topic of topics(); track topic.id; let i = $index) {
+        <a [routerLink]="['/lab', current.id, topic.id]" class="lab-topic-row"
+          [attr.data-testid]="'topic-' + topic.id">
+          <span class="lab-topic-number">{{ i + 1 }}</span>
+          <span class="lab-topic-copy">
+            <small>{{ topic.group }}</small>
+            <strong>{{ topic.title }}</strong>
+            <span>{{ topic.description }}</span>
+          </span>
+          <span class="lab-topic-arrow" aria-hidden="true">→</span>
+        </a>
+      } @empty {
+        <p>No topics have been published for this category.</p>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="lab-section"><h1>Unknown category</h1>
+    <p>This category does not exist. Select one of the three cards.</p>
+    <a routerLink="/lab">Return to all categories</a>
+  </section>
+}
+

@@ -1,0 +1,224 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/chapters">Chapters</a><span>/</span>
+  <a routerLink="/chapters/06">06 · API, RxJS &amp; Signals</a><span>/</span>
+  @if (topic(); as selected) {
+    <a [routerLink]="['/chapters','06',selected.id]">{{ selected.name }}</a><span>/</span>
+  }
+  <span>{{ lesson()?.name ?? 'Unknown lab' }}</span>
+</div>
+@if (topic(); as current) {
+  @if (lesson(); as lab) {
+    <section class="lab-demo-header">
+      <div>
+        <p class="lab-kicker">CHAPTER 06 · LEVEL 04 / 04 · LIVE EXECUTION</p>
+        <h1>{{ lab.name }}</h1>
+        <p>{{ note()?.explanation }}</p>
+        <p class="lab-hook">{{ note()?.hook }}</p>
+      </div>
+      <button type="button" class="lab-outline-button" (click)="resetDemo()">Reset demo data</button>
+    </section>
+
+    <div class="api-workspace">
+      <section class="api-panel" data-testid="ch06-live-execution">
+        <div class="api-panel-heading"><h2>Run the concept</h2><span>Actual Angular code</span></div>
+        <p class="api-instruction"><strong>Exercise:</strong> {{ note()?.action }}</p>
+
+        @switch (current.id) {
+          @case ('httpclient-and-api-integration') {
+            <p>Real Angular HttpClient calls an in-memory mock backend through registered interceptors. No external server is contacted.</p>
+            <label>Complaint title
+              <input [value]="sampleTitle()" (input)="sampleTitle.set(readValue($event))" />
+            </label>
+            <label>GET query parameter · status
+              <select [value]="statusFilter()" (change)="statusFilter.set($any(readValue($event)))">
+                <option>All</option><option>Open</option><option>Resolved</option>
+              </select>
+            </label>
+            <div class="api-buttons">
+              <button type="button" (click)="runApiLab()">Run Lab {{ labNumber() }} HTTP example</button>
+              <button type="button" (click)="doGet()">GET</button>
+              <button type="button" (click)="doPost()">POST</button>
+              <button type="button" (click)="doPut()">PUT</button>
+              <button type="button" (click)="doDelete()">DELETE</button>
+              <button type="button" (click)="doEmployees()">Employee API</button>
+              <button type="button" (click)="doFailure(403)">Test 403</button>
+            </div>
+            <p>HTTP request count: {{ backend.calls() }}</p>
+          }
+          @case ('http-interceptors') {
+            <p>Request → auth header → logging/loading → error handler → in-memory backend → response.</p>
+            <div class="api-buttons">
+              <button type="button" (click)="runApiLab()">Run Lab {{ labNumber() }} interceptor flow</button>
+              <button type="button" (click)="doGet()">Trace successful request</button>
+              <button type="button" (click)="doFailure(401)">401</button>
+              <button type="button" (click)="doFailure(403)">403</button>
+              <button type="button" (click)="doFailure(500)">500</button>
+              <button type="button" (click)="doRetry()">Retry twice</button>
+            </div>
+            <div class="api-stats">
+              <span>In-flight requests: {{ trace.loading() }}</span>
+              <span>Errors observed: {{ trace.errors() }}</span>
+              <span>Mock token seen: {{ trace.lastHeader() }}</span>
+            </div>
+            <strong>Interceptor chain events (most recent first)</strong>
+            <ul class="api-trace">
+              @for (log of trace.events(); track $index) { <li>{{ log }}</li> }
+              @empty { <li>Click a request button to see tracing.</li> }
+            </ul>
+          }
+          @case ('rxjs-fundamentals') {
+            <p>A source Observable is transformed by RxJS operators. Compare the result with the source code excerpt.</p>
+            <button type="button" (click)="runRxLab()">Run RxJS Lab {{ labNumber() }} stream</button>
+            <p>Subscribe clicks: {{ subscriptionCount() }}</p>
+            <ol class="api-stream">
+              @for (item of rxOutput(); track $index) { <li>{{ item }}</li> }
+              @empty { <li>No emissions yet.</li> }
+            </ol>
+            <p class="api-caption">Try map, filter, tap, pipe, switchMap or mergeMap by selecting a corresponding lab.</p>
+          }
+          @case ('observables-and-subjects') {
+            <p>Cold Observable, hot Subject, BehaviorSubject, ReplaySubject and AsyncSubject use actual RxJS classes.</p>
+            <button type="button" (click)="runObservableLab()">Run Observable / Subject Lab {{ labNumber() }}</button>
+            <p>Shared BehaviorSubject latest value: {{ latestUser() }}</p>
+            <p>Second subscriber: {{ subscriberB() }}</p>
+            <ul class="api-stream">
+              @for (value of rxOutput(); track $index) { <li>{{ value }}</li> }
+              @empty { <li>Execute the lab to see emissions.</li> }
+            </ul>
+            <strong>Hot Subject subscribers</strong>
+            <ul class="api-stream">
+              @for (item of notifications(); track $index) { <li>{{ item }}</li> }
+              @empty { <li>No notifications published.</li> }
+            </ul>
+          }
+          @case ('signals') {
+            <p>Writable signals are read with (), replaced with set(), or updated with update().</p>
+            <label>Complaint name <input [value]="sampleTitle()" (input)="sampleTitle.set(readValue($event))" /></label>
+            <div class="api-buttons">
+              <button type="button" (click)="runSignalLab()">Run Signal Lab {{ labNumber() }}</button>
+              <button type="button" (click)="count.set(10)">set(10)</button>
+              <button type="button" (click)="runSignalLab()">Increment via update()</button>
+              <button type="button" (click)="updateCity()">Update object</button>
+            </div>
+            <p>Signal counter: <strong>{{ count() }}</strong></p>
+            <p>Signal object: {{ user().name }} · {{ user().city }}</p>
+            <p>Mock login flag (NOT real authentication): {{ signalLoggedIn() }}</p>
+            <p>Employee count: {{ employees() }}</p>
+            <strong>Signal array</strong>
+            <ul>@for (title of signalList(); track $index){ <li>{{ title }}</li> }</ul>
+          }
+          @case ('computed-signals') {
+            <p>Computed signals derive values from other signals, without storing a duplicate writable total.</p>
+            <label>Price <input type="number" min="0" [value]="price()" (input)="price.set(readNumber($event))" /></label>
+            <label>Quantity <input type="number" min="0" [value]="quantity()" (input)="quantity.set(readNumber($event))" /></label>
+            <div class="api-buttons">
+              <button type="button" (click)="runComputedLab()">Run Computed Lab {{ labNumber() }}</button>
+              <button type="button" (click)="quantity.set(quantity()+1)">Increase quantity</button>
+            </div>
+            <div class="api-stats">
+              <span>subtotal: {{ total() }}</span>
+              <span>tax (18%): {{ tax() }}</span>
+              <span>grand total: {{ grandTotal() }}</span>
+              <span>full name: {{ fullName() }}</span>
+              <span>pending complaints: {{ pending() }}</span>
+              <span>completion: {{ percentage() }}%</span>
+              <span>inactive employees: {{ inactiveEmployees() }}</span>
+              <span>remaining mock balance: {{ remainingBalance() }}</span>
+            </div>
+            <p>Only price/quantity/etc. are writable; total() is derived and read-only.</p>
+          }
+          @case ('effects') {
+            <p>Angular effect() tracks signal reads and records observable reactions, not computed state.</p>
+            <div class="api-buttons">
+              <button type="button" (click)="runEffectLab()">Run Effects Lab {{ labNumber() }}</button>
+              <button type="button" (click)="effectCount.set(effectCount()+1)">Change count</button>
+              <button type="button" (click)="theme.set(theme()==='light'?'dark':'light')">Change theme</button>
+            </div>
+            <p>Tracked counter: {{ effectCount() }} · theme: {{ theme() }}</p>
+            <div class="api-live" role="status">
+              <strong>Effect run count: {{ effectRuns() }}</strong>
+              <p>{{ effectMessage() }}</p>
+            </div>
+            <p class="api-caption">{{ storageMessage() }} The demo saves only fictitious name/theme settings; no analytics or external API request is made.</p>
+          }
+          @case ('angular-state-management-basics') {
+            <p>TrainingStore is a root-provided single source of truth with signals, computed selectors and a BehaviorSubject.</p>
+            <label>Fictitious user
+              <input [value]="newUser()" (input)="newUser.set(readValue($event))" />
+            </label>
+            <label>Sample complaint
+              <input [value]="sampleTitle()" (input)="sampleTitle.set(readValue($event))" />
+            </label>
+            <div class="api-buttons">
+              <button type="button" (click)="runStateLab()">Run State Lab {{ labNumber() }}</button>
+              <button type="button" (click)="store.addComplaint(sampleTitle())">Add store complaint</button>
+              <button type="button" (click)="store.loggedIn.set(!store.loggedIn())">Toggle demo session</button>
+              <button type="button" (click)="store.updateUser(newUser())">Change user</button>
+            </div>
+            <label>Complaint filter
+              <select [value]="store.filter()" (change)="store.filter.set($any(readValue($event)))">
+                <option>All</option><option>Open</option><option>Resolved</option>
+              </select>
+            </label>
+            <div class="api-stats">
+              <span>current user: {{ store.currentUser() }}</span>
+              <span>demo session: {{ store.loggedIn() }}</span>
+              <span>total: {{ store.total() }}</span>
+              <span>open: {{ store.open() }}</span>
+              <span>resolved: {{ store.resolved() }}</span>
+              <span>completion: {{ store.completion() }}%</span>
+              <span>loading: {{ store.loading() }}</span>
+            </div>
+            @if (store.error()) { <p class="api-error">{{ store.error() }}</p> }
+            <ul>
+              @for (item of store.visible(); track item.id) {
+                <li>{{ item.id }} — {{ item.title }} ({{ item.status }})</li>
+              } @empty { <li>No matching stored complaints. Load or add one.</li> }
+            </ul>
+          }
+        }
+
+        @if (current.id==='httpclient-and-api-integration'||current.id==='http-interceptors') {
+          <div class="api-live" data-testid="ch06-http-result" role="status">
+            <strong>HttpClient response/error</strong>
+            <pre>{{ apiOutput() }}</pre>
+          </div>
+          <div class="api-live">
+            <strong>Current mock backend data</strong>
+            <ul>
+              @for (item of backend.complaints(); track item.id) {
+                <li>{{ item.id }} — {{ item.title }} ({{ item.status }})</li>
+              } @empty { <li>Empty. Click POST to create.</li> }
+            </ul>
+          </div>
+        }
+      </section>
+      <aside class="api-notes">
+        <h2>Learn, inspect, remember</h2>
+        <p class="api-eyebrow">Topic {{ current.name }} · Lab {{ labNumber() }}</p>
+        <h3>Beginner explanation</h3><p>{{ note()?.explanation }}</p>
+        <h3>Expected visual effect</h3><p>{{ note()?.expected }}</p>
+        <h3>Memory hook</h3><p>{{ note()?.hook }}</p>
+        <h3>Original course code excerpt</h3>
+        <pre><code>{{ note()?.snippet }}</code></pre>
+        <h3>Working implementation</h3>
+        <p>Inspect <code>src/api/training-api.ts</code>, <code>training-store.ts</code>,
+          <code>training-execution.ts</code> and this component's HTML.</p>
+        <p><a [href]="current.source" target="_blank" rel="noopener noreferrer">Original Chapter 06 topic ↗</a></p>
+        @if (lab.detailFile; as guide) {
+          <p><a [href]="guide" target="_blank" rel="noopener noreferrer">Dedicated lab execution guide ↗</a></p>
+        }
+        <small>The backend and authentication/error scenarios are explicitly simulated for classroom safety.</small>
+      </aside>
+    </div>
+    <nav class="lab-bottom-nav">
+      <a [routerLink]="['/chapters','06',current.id]">← All {{ current.name }} labs</a>
+      <a routerLink="/chapters/06">All Chapter 06 topics →</a>
+    </nav>
+  } @else {
+    <section class="lab-section"><h1>Lab not found</h1><a routerLink="/chapters/06">Back to Chapter 06</a></section>
+  }
+} @else {
+  <section class="lab-section"><h1>Topic not found</h1><a routerLink="/chapters/06">Back to Chapter 06</a></section>
+}
+

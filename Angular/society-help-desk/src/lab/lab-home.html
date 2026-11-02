@@ -1,0 +1,29 @@
+<section class="lab-hero">
+  <div class="lab-eyebrow">Society Help Desk · Module 03</div>
+  <h1>Learn Angular by seeing the effect</h1>
+  <p>Choose one of three concepts. Open a topic, change an input and watch Angular respond live.</p>
+  <p class="lab-hook">Remember: Directives change · Pipes format · Animations move.</p>
+</section>
+<section class="lab-section" aria-labelledby="category-heading">
+  <div class="lab-section-heading">
+    <div><p class="lab-kicker">SCREEN 01 / 03</p><h2 id="category-heading">Choose your learning path</h2></div>
+    <span class="lab-count">{{ total }} interactive demos</span>
+  </div>
+  <div class="lab-category-grid">
+    @for (category of categories; track category.id) {
+      <a class="lab-category-card" [class.lab-blue]="category.id === 'directives'"
+        [class.lab-purple]="category.id === 'pipes'"
+        [class.lab-orange]="category.id === 'animations'"
+        [routerLink]="['/lab', category.id]" [attr.data-testid]="'category-' + category.id">
+        <span class="lab-category-icon" aria-hidden="true">{{ category.icon }}</span>
+        <h3>{{ category.title }}</h3>
+        <p>{{ category.subtitle }}</p>
+        <small>{{ count(category.id) }} practical demonstrations</small>
+        <span class="lab-card-link">Explore topics →</span>
+      </a>
+    }
+  </div>
+</section>
+<section class="lab-info"><strong>Learning flow:</strong> Category → Topic list → Interactive output.
+  The examples use fictitious maintenance and resident data from our Society Help Desk project.</section>
+

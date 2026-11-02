@@ -1,0 +1,34 @@
+<section class="lab-hero">
+  <p class="lab-eyebrow">Techlambda · Angular practical learning</p>
+  <h1>Chapters → Topics → Subtopics → Live Execution</h1>
+  <p>Start with a chapter, select a topic, open a subtopic, then study the implementation and see its effect.</p>
+  <p class="lab-hook">One continuous Society Help Desk application — not a separate project for every lesson.</p>
+</section>
+<section class="lab-section">
+  <div class="lab-section-heading">
+    <div><p class="lab-kicker">LEVEL 01 / 04</p><h2>Choose your chapter</h2></div>
+    <span class="lab-count">{{ chapters.length }} published chapters</span>
+  </div>
+  <div class="lab-course-grid" data-testid="chapter-grid">
+    @for (chapter of chapters; track chapter.id) {
+      <a class="lab-chapter-card" [routerLink]="['/chapters',chapter.id]"
+        [attr.data-testid]="'chapter-' + chapter.id">
+        <span class="lab-chapter-number">{{ chapter.id }}</span>
+        <strong>{{ chapter.name }}</strong>
+        <span>{{ chapter.topics.length }} course topics</span>
+        @if (liveCount(chapter.id) > 0) {
+          <small>{{ liveCount(chapter.id) }} live demos available</small>
+        } @else {
+          <small>Study materials · demos not yet implemented</small>
+        }
+        <span class="lab-card-link">Open chapter →</span>
+      </a>
+    }
+  </div>
+</section>
+<section class="lab-info">
+  <strong>Implementation status:</strong> Chapter 03 provides 26 working-source demo implementations.
+  Other chapters appear using their actual course topic files; their execution pages link to the notes
+  and identify demonstrations that are not yet implemented.
+</section>
+

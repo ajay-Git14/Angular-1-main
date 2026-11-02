@@ -1,0 +1,61 @@
+/* Scoped to Chapter 04. Keep the Society Help Desk and Chapter 03 styles unchanged. */
+.forms-header .lab-hook { color:#925014; }
+.forms-workspace { display:grid; grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr);
+  gap:1.2rem; align-items:start; margin:1.25rem 0; }
+.forms-playground,.forms-teaching { min-width:0; border-radius:14px; background:#fff;
+  border:1px solid #d9e4ef; padding:1.45rem; box-shadow:0 8px 25px #24486710; }
+.forms-panel-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.forms-panel-head h2,.forms-teaching h2 { font-size:1.2rem; margin:0; color:#183654; }
+.forms-panel-head span { border-radius:99px; padding:.3rem .65rem; background:#e4f6ea;
+  color:#156c3e; font-weight:750; font-size:.78rem; }
+.forms-instruction { color:#465e77; padding:1rem; border-left:3px solid #e98e34; line-height:1.55;
+  background:#fff8ed; margin:1.25rem 0; border-radius:5px; }
+.forms-caption { font-size:.91rem; color:#607590; }
+.forms-demo-form { display:flex; flex-direction:column; gap:.8rem; }
+.forms-demo-form label, .forms-field label { display:flex; flex-direction:column; gap:.35rem;
+  font-size:.9rem; font-weight:650; color:#28445f; }
+.forms-demo-form input:not([type=checkbox]):not([type=radio]):not([type=file]),
+.forms-demo-form textarea,.forms-demo-form select,.forms-checklist input {
+ width:100%; max-width:100%; padding:.65rem .75rem; border:1px solid #acc0d2;
+ border-radius:8px; background:#fff; color:#1c344c; font:inherit; }
+.forms-demo-form textarea { min-height:85px; resize:vertical; }
+.forms-demo-form .forms-check,.forms-demo-form .forms-radio {
+ display:flex; flex-direction:row; align-items:center; gap:.5rem; font-weight:500; }
+.forms-demo-form fieldset { border:1px solid #d7e5f0; padding:1rem; border-radius:8px; }
+.forms-demo-form button,.forms-toolbar button,.forms-skill-row button {
+ border:0; background:#245f93; color:#fff; padding:.6rem .9rem; border-radius:8px;
+ font:inherit; font-weight:650; cursor:pointer; align-self:flex-start; }
+.forms-demo-form button:hover,.forms-toolbar button:hover { background:#164971; }
+.forms-demo-form button:disabled,.forms-toolbar button:disabled { opacity:.5;cursor:not-allowed; }
+.forms-demo-form .forms-secondary, .forms-toolbar .forms-secondary,
+.forms-skill-row .forms-secondary { background:#ecf3fa; border:1px solid #c3d3e3; color:#315573; }
+.forms-live-result { margin-top:1.15rem; border:1px solid #c9e4d4; border-radius:10px;
+ background:#f0faf4; padding:1rem; color:#214b35; font-size:.91rem; }
+.forms-live-result pre,.forms-code { white-space:pre-wrap; overflow-wrap:anywhere;
+ padding:.8rem; border-radius:8px; background:#152a40; color:#f1f8ff;
+ font-size:.81rem; line-height:1.6; max-height:420px; overflow:auto; }
+.forms-live-result pre { background:#f6fbf8; color:#244c32; border:1px solid #d6ece0; }
+.forms-teaching { position:sticky; top:1rem; }
+.forms-teaching h3 { font-size:.93rem; margin:1.4rem 0 .45rem; }
+.forms-teaching p { line-height:1.56; margin:.55rem 0; }
+.forms-eyebrow { color:#657891; font-weight:750; font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; }
+.forms-teaching a { overflow-wrap:anywhere; }
+.forms-teaching small { color:#61718a; }
+.forms-error { display:block; color:#a2322c; background:#fff0ed; padding:.45rem .7rem; border-radius:5px; }
+.forms-states { display:flex; flex-wrap:wrap; gap:.4rem; }
+.forms-states span { background:#e9f2fc; color:#244b70; font-size:.76rem;
+ padding:.4rem .6rem; border-radius:7px; }
+.forms-skill-list,.forms-checklist { display:flex; flex-direction:column;
+ border:1px solid #d6e5f2; padding:.85rem; border-radius:9px; gap:.6rem; }
+.forms-checklist { margin-top:1.2rem; }
+.forms-skill-row { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+.forms-skill-row input { flex:1 1 170px; }
+.forms-toolbar { display:flex; gap:.5rem; flex-wrap:wrap; margin:1rem 0; }
+.forms-field { border-bottom:1px dashed #c7d8e8; padding:.8rem 0; }
+.forms-field-actions { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.55rem; }
+.forms-field-actions button { font-size:.79rem; padding:.4rem .7rem; }
+@media(max-width:840px) { .forms-workspace {grid-template-columns:1fr;}
+  .forms-teaching { position:static; } }
+@media(max-width:440px){ .forms-playground,.forms-teaching {padding:1rem;} }
+@media(prefers-reduced-motion:reduce){.forms-workspace * {scroll-behavior:auto!important;} }
+

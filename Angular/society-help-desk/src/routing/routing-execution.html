@@ -1,0 +1,128 @@
+<div class="lab-breadcrumb">
+ <a routerLink="/chapters">Chapters</a><span>/</span>
+ <a routerLink="/chapters/07">07 · Routing &amp; Navigation</a><span>/</span>
+ @if(topic();as current){<a [routerLink]="['/chapters','07',current.id]">{{current.name}}</a><span>/</span>}
+ <span>{{lesson()?.name ?? 'Not found'}}</span>
+</div>
+@if(topic();as current){
+ @if(lesson();as selected){
+  <section class="lab-demo-header">
+   <div>
+    <p class="lab-kicker">CHAPTER 07 · LEVEL 04 / 04 · LIVE EXECUTION</p>
+    <h1>{{selected.name}}</h1>
+    <p>{{note()?.explanation}}</p>
+    <p class="lab-hook">{{note()?.hook}}</p>
+   </div>
+   <button type="button" class="lab-outline-button" (click)="resetDemo()">Reset training session</button>
+  </section>
+  <div class="route-workspace">
+   <section class="route-playground" data-testid="ch07-live-execution">
+    <div class="route-head"><h2>Interactive Angular Router</h2><span>Actual navigation</span></div>
+    <p class="route-instruction"><strong>Do this:</strong> {{note()?.action}}</p>
+    @switch(current.id){
+     @case('routing-and-navigation'){
+      <p>Angular Router controls SPA navigation; routerLink does not reload the entire page.</p>
+      <nav class="route-actions" aria-label="RouterLink examples">
+       <a routerLink="/dashboard" routerLinkActive="route-active">Society dashboard</a>
+       <a routerLink="/new" routerLinkActive="route-active">New complaint</a>
+       <a routerLink="/about" routerLinkActive="route-active">About</a>
+       <a routerLink="/routing-lab/portal/complaints" routerLinkActive="route-active">Nested portal</a>
+      </nav>
+      <button type="button" (click)="runSelected()">Run Lab {{labNumber()}} · Router.navigate()</button>
+      <p class="route-caption">Lab 7 tests the existing default redirect; Lab 8 tests the wildcard redirect; the navigation target changes by lab.</p>
+     }
+     @case('route-parameters'){
+      <label>Employee ID <input type="number" min="1" [value]="userId()" (input)="userId.set(readNumber($event))"/></label>
+      <label>Page <input type="number" min="1" [value]="page()" (input)="page.set(readNumber($event))"/></label>
+      <label>Complaint status
+       <select [value]="status()" (change)="status.set($any($event.target).value)">
+        <option>Open</option><option>Resolved</option>
+       </select>
+      </label>
+      <button type="button" (click)="runSelected()">Run Lab {{labNumber()}} · open parameterized route</button>
+      <nav class="route-actions">
+       <a routerLink="/routing-lab/employee/101">:id 101</a>
+       <a routerLink="/routing-lab/employee/102">:id 102</a>
+       <a routerLink="/routing-lab/department/10/employee/100">Multiple :params</a>
+       <a routerLink="/routing-lab/people" [queryParams]="{page:2,status:'Resolved'}" fragment="results">Query + fragment</a>
+      </nav>
+      <p>Compare <code>snapshot.paramMap</code> with reactive <code>paramMap</code> and <code>queryParamMap</code> on the next screen.</p>
+     }
+     @case('child-routes'){
+      <p>Parent route stays visible while children render inside its nested <code>router-outlet</code>.</p>
+      <button type="button" (click)="runSelected()">Run Lab {{labNumber()}} · open nested route</button>
+      <nav class="route-actions">
+       <a routerLink="/routing-lab/portal">Default child</a>
+       <a routerLink="/routing-lab/portal/complaints">Complaints child</a>
+       <a routerLink="/routing-lab/portal/reports">Reports child</a>
+       <a routerLink="/routing-lab/portal/reports/monthly">Second-level child</a>
+       <a routerLink="/routing-lab/portal/complaints/501">Child :id</a>
+      </nav>
+      <p>Observe the persistent portal header and the nested router-outlet on the next screen.</p>
+     }
+     @case('route-guards'){
+      <p>These flags are for classroom navigation only, <strong>not actual authentication/authorization</strong>.</p>
+      <div class="route-stats">
+       <span>Signed in (fake): {{session.signedIn()}}</span>
+       <span>Role: {{session.role()}}</span>
+       <span>Guard attempts: {{session.attempts()}}</span>
+      </div>
+      <div class="route-actions">
+       <button type="button" (click)="session.login()">Set demo signed-in</button>
+       <button type="button" (click)="session.makeAdmin()">Set admin role</button>
+       <button type="button" (click)="session.logout()">Sign out (demo)</button>
+      </div>
+      <button type="button" (click)="runSelected()">Run Lab {{labNumber()}} · evaluate guard</button>
+      <nav class="route-actions">
+       <a routerLink="/routing-lab/protected">CanActivate</a>
+       <a routerLink="/routing-lab/admin">CanMatch admin</a>
+       <a routerLink="/routing-lab/private/reports">CanActivateChild</a>
+       <a routerLink="/routing-lab/editor">CanDeactivate editor</a>
+      </nav>
+      <p>Try once signed out, then again signed in. For an admin route select the admin role. Edit the CanDeactivate form and try leaving.</p>
+     }
+     @case('lazy-loading'){
+      <p>Angular's router uses dynamic <code>import()</code> for lazy components and lazy route configuration.</p>
+      <button type="button" (click)="runSelected()">Run Lab {{labNumber()}} · load feature</button>
+      <nav class="route-actions">
+       <a routerLink="/routing-lab/lazy-report">loadComponent example</a>
+       <a routerLink="/routing-lab/lazy-feature">loadChildren example</a>
+       <a routerLink="/routing-lab/lazy-feature/detail">Nested lazy component</a>
+      </nav>
+      <p>Before clicking, open DevTools → Network → JS. Look for dynamically loaded chunks. Do not claim bundle-size savings without a production build measurement.</p>
+     }
+    }
+    <div class="route-live-result" data-testid="ch07-router-state" aria-live="polite">
+     <strong>Router state</strong>
+     <p>Current URL: <code>{{router.url}}</code></p>
+     <p>{{navMessage()}}</p>
+     <ul>@for(path of transitions();track $index){<li>{{path}}</li>}@empty{<li>No navigation event recorded since opening this lab.</li>}</ul>
+    </div>
+   </section>
+   <aside class="route-study">
+    <h2>Concept → Code → Output</h2>
+    <p class="route-eyebrow">{{current.name}} · Lab {{labNumber()}}</p>
+    <h3>Beginner explanation</h3><p>{{note()?.explanation}}</p>
+    <h3>Expected effect</h3><p>{{note()?.expected}}</p>
+    <h3>Memory hook</h3><p>{{note()?.hook}}</p>
+    <h3>Published syllabus code</h3>
+    <pre><code>{{note()?.snippet}}</code></pre>
+    <h3>Actual implementation</h3>
+    <p>Inspect <code>src/routing/routing-execution.ts</code>, <code>routing-pages.ts</code>,
+      <code>routing-guards.ts</code> and <code>routing-lazy.routes.ts</code>.</p>
+    <p><a [href]="current.source" target="_blank" rel="noopener noreferrer">Original course topic ↗</a></p>
+    @if(selected.detailFile;as guide){<p><a [href]="guide" target="_blank" rel="noopener noreferrer">Dedicated execution guide ↗</a></p>}
+    <small>Client-side guard flags are demonstrative and do not protect a backend or persist user credentials.</small>
+   </aside>
+  </div>
+  <nav class="lab-bottom-nav">
+   <a [routerLink]="['/chapters','07',current.id]">← All topic labs</a>
+   <a routerLink="/chapters/07">All Chapter 07 topics →</a>
+  </nav>
+ }@else{
+  <section class="lab-section"><h1>Unknown Chapter 07 lab</h1><a routerLink="/chapters/07">Back to Chapter 07</a></section>
+ }
+}@else{
+ <section class="lab-section"><h1>Unknown Chapter 07 topic</h1><a routerLink="/chapters/07">Back to Chapter 07</a></section>
+}
+

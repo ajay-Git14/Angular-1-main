@@ -1,0 +1,17 @@
+<section class="route-sample"><h1>Live route and query parameters</h1>
+<p>Configured path: {{ route.snapshot.routeConfig?.path }}</p>
+<p>Snapshot at creation: {{ firstSnapshot() || '(none)' }}</p>
+<p>Reactive id: {{ params().get('id') || '(none)' }}</p>
+<p>deptId: {{ params().get('deptId') || '(none)' }}, empId: {{ params().get('empId') || '(none)' }}</p>
+<p>Query page: {{ query().get('page') || '(none)' }}, status: {{ query().get('status') || '(none)' }}</p>
+<p>Fragment: {{ fragment() || '(none)' }}</p>
+<nav class="route-actions">
+<a routerLink="/routing-lab/employee/101">Employee 101</a>
+<a routerLink="/routing-lab/employee/102">Employee 102</a>
+<a routerLink="/routing-lab/complaint/5001">Complaint 5001</a>
+<a routerLink="/routing-lab/department/10/employee/100">Dept 10, employee 100</a>
+<a routerLink="/routing-lab/people" [queryParams]="{page:1,status:'Open'}" fragment="results">Page 1</a>
+<a routerLink="/routing-lab/people" [queryParams]="{page:2,status:'Resolved'}" fragment="results">Page 2</a>
+</nav>
+<p>Compare snapshot (one-time) with paramMap and queryParamMap (reactive).</p>
+<a routerLink="/chapters/07">Back to Chapter 07</a></section>

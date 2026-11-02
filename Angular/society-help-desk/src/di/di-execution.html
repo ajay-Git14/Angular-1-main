@@ -1,0 +1,274 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/chapters">Chapters</a><span>/</span>
+  <a routerLink="/chapters/05">05 · DI &amp; Services</a><span>/</span>
+  @if (topic(); as current) {
+    <a [routerLink]="['/chapters','05',current.id]">{{ current.name }}</a><span>/</span>
+  }
+  <span>{{ subtopic()?.name ?? 'Not found' }}</span>
+</div>
+@if (topic(); as current) {
+  @if (subtopic(); as lesson) {
+    <section class="lab-demo-header">
+      <div>
+        <p class="lab-kicker">CHAPTER 05 · LEVEL 04 / 04 · LIVE EXECUTION</p>
+        <h1>{{ lesson.name }}</h1>
+        <p>{{ note()?.explanation }}</p>
+        <p class="lab-hook">{{ note()?.hook }}</p>
+      </div>
+      <button type="button" class="lab-outline-button" (click)="reset()">Reset training data</button>
+    </section>
+
+    <div class="di-workspace">
+      <section class="di-demo" aria-label="Live dependency injection demo">
+        <div class="di-head"><h2>Interactive execution</h2><span>Angular injector active</span></div>
+        <p class="di-action"><strong>Try this:</strong> {{ note()?.action }}</p>
+
+        @switch (current.id) {
+          @case ('dependency-injection') {
+            @switch (labNumber()) {
+              @case (1) {
+                <p>Manual creation couples a consumer to a concrete helper. Compare it with injected data.</p>
+                <button type="button" (click)="manuallyCreate()">Construct helper with new</button>
+                <p>{{ manualMessage() }} Instances manually created: {{ manuallyCreated() }}</p>
+                <button type="button" (click)="loadComplaints()">Use injected service</button>
+              }
+              @case (2) {
+                <p>Angular supplies the same root service through a constructor and <code>inject()</code>.</p>
+                <strong data-testid="constructor-equality">Same object? {{ sameByConstructor }}</strong>
+                <button type="button" (click)="createComplaint()">Use dependency to create complaint</button>
+              }
+              @case (3) {
+                <p>Constructor injection occurs when Angular constructs this component.</p>
+                <p>Injected complaint count: {{ constructorService.complaints().length }}</p>
+                <button type="button" (click)="loadComplaints()">Call constructor-injected service</button>
+              }
+              @case (4) {
+                <p>The consumer calls a method but does not create the service.</p>
+                <button type="button" (click)="loadComplaints()">Call getComplaints()</button>
+                <p>Service read calls: {{ complaints.calls() }}</p>
+              }
+              @case (5) {
+                <p>Injector.get() locates the existing provider instead of creating a separate instance.</p>
+                <strong>inject(ComplaintService) === injector.get(ComplaintService): {{ sameByInjector }}</strong>
+                <button type="button" (click)="shared.increment()">Resolve and update shared counter</button>
+                <p>Root count: {{ shared.count() }}</p>
+              }
+              @case (6) {
+                <p>The root provider shares one service instance across consumers.</p>
+                <p>Root service identity: {{ shared.identity }}</p>
+                <button type="button" (click)="shared.increment()">Increment root service</button>
+                <p>Count: {{ shared.count() }}</p>
+              }
+              @case (7) {
+                <p>Each component-scoped provider makes a new local instance.</p>
+                <div class="di-scope-grid">
+                  <app-di-scope-panel label="Desk A" />
+                  <app-di-scope-panel label="Desk B" />
+                </div>
+              }
+              @case (8) {
+                <p>Child injectors can override a token; root service identity remains shared.</p>
+                <p>Root token: {{ config.environment }} / {{ heading }}</p>
+                <div class="di-scope-grid">
+                  <app-di-scope-panel label="Hierarchy child A" />
+                  <app-di-scope-panel label="Hierarchy child B" />
+                </div>
+              }
+              @case (9) {
+                <p>Modern <code>inject()</code> uses Angular's current injection context.</p>
+                <p>inject() and constructor share instance: {{ sameByConstructor }}</p>
+                <button type="button" (click)="loadComplaints()">Use inject() service</button>
+              }
+              @case (10) {
+                <p>InjectionToken represents dependencies such as strings and configuration.</p>
+                <p>TRAINING_CONFIG.application: {{ config.application }}</p>
+                <p>Environment: {{ config.environment }}</p>
+                <button type="button" (click)="simulateApi()">Resolve API_URL token</button>
+              }
+              @case (11) {
+                <p>Provider recipes tell Angular how to resolve a token.</p>
+                <p>Root config (token factory): {{ config.application }}</p>
+                <p>Local DISPLAY_HEADING (useFactory): {{ heading }}</p>
+                <button type="button" (click)="sendNotice()">Call useClass provider</button>
+              }
+              @case (12) {
+                <p>Inject the API_URL token rather than hardcoding its value inside a component.</p>
+                <p>Injected URL: <code>{{ apiUrl }}</code></p>
+                <button type="button" (click)="simulateApi()">Preview configuration without fetching</button>
+              }
+              @case (13) {
+                <p>Society Help Desk: component delegates complaint work to a root service.</p>
+                <button type="button" (click)="createComplaint()">Create sample complaint</button>
+                <button type="button" (click)="loadComplaints()">Get complaints</button>
+              }
+              @case (14) {
+                <p>The EmployeeService is injected in the same way as ComplaintService.</p>
+                <label>New employee <input [value]="employeeName()"
+                  (input)="employeeName.set(readValue($event))" /></label>
+                <button type="button" (click)="addEmployee()">Add employee</button>
+              }
+              @case (15) {
+                <p>AccountService demonstrates an enterprise service boundary using fake values only.</p>
+                <label>Mock transfer amount <input type="number" min="1"
+                  [value]="amount()" (input)="amount.set(readAmount($event))" /></label>
+                <button type="button" (click)="transfer()">Apply mock transfer</button>
+                <p>Fake account balance: {{ account.balance() }}</p>
+              }
+            }
+          }
+          @case ('services-and-providers-injectable') {
+            @switch (labNumber()) {
+              @case (1) {
+                <p>A service is a class containing reusable business operations.</p>
+                <button type="button" (click)="loadComplaints()">Use ComplaintService</button>
+              }
+              @case (2) {
+                <p>CLI exercise: generate a service in a separate student branch or scratch app:</p>
+                <pre>ng generate service complaint</pre>
+                <p>The working service in this application is already present and injected.</p>
+                <button type="button" (click)="loadComplaints()">Use existing generated-style service</button>
+              }
+              @case (3) {
+                <p>Business logic returns training complaints without DOM manipulation.</p>
+                <button type="button" (click)="loadComplaints()">getComplaints()</button>
+              }
+              @case (4) {
+                <p>The component delegates to the injected service, then Angular renders returned data.</p>
+                <button type="button" (click)="loadComplaints()">Load complaints from service</button>
+              }
+              @case (5) {
+                <p><code>@Injectable()</code> allows Angular to provide a service class with constructor dependencies.</p>
+                <button type="button" (click)="sendNotice()">Send local notification via useClass</button>
+              }
+              @case (6) {
+                <p><code>providedIn:'root'</code> allows a shared application-level instance.</p>
+                <button type="button" (click)="shared.increment()">Use root counter</button>
+                <p>Root identity: {{ shared.identity }} / count {{ shared.count() }}</p>
+              }
+              @case (7) {
+                <p>Both child consumers observe the same shared root state.</p>
+                <div class="di-scope-grid">
+                  <app-di-scope-panel label="Root consumer A" />
+                  <app-di-scope-panel label="Root consumer B" />
+                </div>
+              }
+              @case (8) {
+                <p>Component providers isolate service state for each child.</p>
+                <div class="di-scope-grid">
+                  <app-di-scope-panel label="Scoped component A" />
+                  <app-di-scope-panel label="Scoped component B" />
+                </div>
+              }
+              @case (9) {
+                <p>Two visible consumers read the same root UserService.</p>
+                <label>Update shared user <input [value]="userName()"
+                  (input)="userName.set(readValue($event))" /></label>
+                <button type="button" (click)="changeUser()">Update shared user</button>
+                <div class="di-scope-grid">
+                  <p class="di-demo-card">Component A sees: {{ users.userName() }}</p>
+                  <p class="di-demo-card">Component B sees: {{ users.userName() }}</p>
+                </div>
+              }
+              @case (10) {
+                <p>EmployeeService owns simple add and remove operations.</p>
+                <label>Employee <input [value]="employeeName()"
+                  (input)="employeeName.set(readValue($event))" /></label>
+                <button type="button" (click)="addEmployee()">Save employee locally</button>
+              }
+              @case (11) {
+                <p>ComplaintService encapsulates create, read, update and delete.</p>
+                <label>Complaint <input [value]="complaintTitle()"
+                  (input)="complaintTitle.set(readValue($event))" /></label>
+                <button type="button" (click)="createComplaint()">Create complaint</button>
+                <button type="button" (click)="loadComplaints()">Read complaints</button>
+              }
+              @case (12) {
+                <p>Employee methods can be used by different features.</p>
+                <button type="button" (click)="addEmployee()">Create employee</button>
+              }
+              @case (13) {
+                <p>Banking service abstraction, deliberately using a local mock balance.</p>
+                <label>Amount <input type="number" [value]="amount()"
+                  (input)="amount.set(readAmount($event))" /></label>
+                <button type="button" (click)="transfer()">Transfer mock funds</button>
+                <p>Remaining mock balance: {{ account.balance() }}</p>
+              }
+              @case (14) {
+                <p>Simulate where a service would call an API. This demo makes NO HTTP request.</p>
+                <p>Configured endpoint: <code>{{ apiUrl }}</code></p>
+                <button type="button" (click)="simulateApi()">Preview service gateway</button>
+              }
+              @case (15) {
+                <p>One consumer injects Complaint, Employee and User services.</p>
+                <button type="button" (click)="useAllServices()">Read all three injected services</button>
+                <p>Same complaint instance through useExisting alias: {{ sameByAlias }}</p>
+              }
+            }
+          }
+        }
+        <div class="di-demo-card" data-testid="ch05-service-result" aria-live="polite">
+          <strong>Latest method output</strong>
+          <p>{{ serviceOutput() }}</p>
+        </div>
+        <section class="di-data-grid" aria-label="Live service state">
+          <div class="di-demo-card">
+            <strong>ComplaintService · Root</strong>
+            <p>getComplaints() calls: {{ complaints.calls() }}</p>
+            <ul>
+              @for (item of complaints.complaints(); track item.id) {
+                <li>
+                  <span>{{ item.id }} — {{ item.title }} ({{ item.status }})</span>
+                  <button type="button" (click)="toggleComplaint(item.id)">Toggle status</button>
+                  <button type="button" (click)="deleteComplaint(item.id)">Delete</button>
+                </li>
+              } @empty { <li>No complaints. Create a new sample item.</li> }
+            </ul>
+          </div>
+          <div class="di-demo-card">
+            <strong>EmployeeService · Root</strong>
+            <ul>
+              @for (person of employees.people(); track $index; let i=$index) {
+                <li>{{ person }}
+                  <button type="button" (click)="deleteEmployee(i)">Remove</button>
+                </li>
+              } @empty { <li>No employees.</li> }
+            </ul>
+            <p>Shared user: {{ users.userName() }}</p>
+          </div>
+        </section>
+      </section>
+      <aside class="di-explanation">
+        <h2>Source → Behavior → Evidence</h2>
+        <p class="di-eyebrow">Original syllabus · Lab {{ labNumber() }}</p>
+        <p>{{ note()?.explanation }}</p>
+        <h3>Memory hook</h3>
+        <p>{{ note()?.hook }}</p>
+        <h3>Teaching code (from course)</h3>
+        <pre><code>{{ note()?.snippet }}</code></pre>
+        <h3>Expected result</h3>
+        <p>{{ note()?.expected }}</p>
+        <h3>Implementation</h3>
+        <p>Open <code>src/di/di-services.ts</code>, <code>di-execution.ts</code>,
+          <code>di-execution.html</code> and <code>di-scope-panel.ts</code>.</p>
+        <p><a [href]="current.source" target="_blank" rel="noopener noreferrer">
+          Original course topic ↗</a></p>
+        @if (lesson.detailFile; as guide) {
+          <p><a [href]="guide" target="_blank" rel="noopener noreferrer">
+            Detailed execution guide for this lab ↗</a></p>
+        }
+        <small>Only fake training data. No HTTP request, authentication or payment.</small>
+      </aside>
+    </div>
+    <nav class="lab-bottom-nav">
+      <a [routerLink]="['/chapters','05',current.id]">← All {{ current.name }} labs</a>
+      <a routerLink="/chapters/05">All Chapter 05 topics →</a>
+    </nav>
+  } @else {
+    <section class="lab-section"><h1>Chapter 05 lab not found</h1>
+      <a routerLink="/chapters/05">Select a published lab</a></section>
+  }
+} @else {
+  <section class="lab-section"><h1>Unknown Chapter 05 topic</h1>
+    <a routerLink="/chapters/05">Back to topics</a></section>
+}
+

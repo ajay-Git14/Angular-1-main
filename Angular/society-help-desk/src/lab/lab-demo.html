@@ -1,0 +1,362 @@
+<div class="lab-breadcrumb">
+  <a routerLink="/lab">All categories</a><span>/</span>
+  @if (category(); as group) {
+    <a [routerLink]="['/lab', group.id]">{{ group.title }}</a>
+  }
+  <span>/</span><span>{{ topic()?.title ?? 'Not found' }}</span>
+</div>
+
+@if (topic(); as lesson) {
+  <section class="lab-demo-header">
+    <div>
+      <p class="lab-kicker">{{ chapter() ? "LEVEL 04 / 04 · LIVE EXECUTION" : "SCREEN 03 / 03" }} · {{ lesson.group }}</p>
+      <h1>{{ lesson.title }}</h1>
+      <p>{{ lesson.description }}</p>
+      <p class="lab-hook">{{ lesson.memoryHook }}</p>
+    </div>
+    <button type="button" class="lab-outline-button" (click)="reset()" data-testid="reset-demo">Reset demo</button>
+  </section>
+
+  <div class="lab-workspace">
+    <section class="lab-preview" aria-labelledby="live-preview-heading">
+      <div class="lab-preview-head"><h2 id="live-preview-heading">Live implementation</h2><span class="lab-live">● Live output</span></div>
+      <p class="lab-instruction"><strong>Try it:</strong> {{ lesson.action }}</p>
+
+      <!-- Directive and pipe demonstrations are deliberately mapped one-to-one with the catalogue. -->
+      @switch (lesson.id) {
+        @case ('ngclass') {
+          <button type="button" (click)="highPriority.set(!highPriority())">Toggle High priority</button>
+          <article class="lab-demo-card" [ngClass]="{ 'lab-urgent': highPriority() }" data-testid="demo-effect">
+            SHD-101 · Lift repair · {{ highPriority() ? 'HIGH' : 'NORMAL' }} priority
+          </article>
+        }
+        @case ('ngstyle') {
+          <label>Notice font size: {{ fontSize() }} px
+            <input aria-label="Notice font size" type="range" min="14" max="40" [value]="fontSize()"
+              (input)="fontSize.set(readNumber($event))" />
+          </label>
+          <p class="lab-demo-card" [ngStyle]="{ fontSize: fontSize() + 'px' }" data-testid="demo-effect">Maintenance notice</p>
+        }
+        @case ('attribute') {
+          <label class="lab-check">
+            <input type="checkbox" [checked]="acknowledged()"
+              (change)="acknowledged.set(readChecked($event)); submitted.set(false)" />
+            I have reviewed the complaint
+          </label>
+          <button type="button" [disabled]="!acknowledged()"
+            [attr.aria-label]="acknowledged() ? 'Ready to submit' : 'Acknowledge first'"
+            (click)="submitDemo()" data-testid="demo-effect">Submit</button>
+          @if (submitted()) { <p class="lab-success" aria-live="polite">Sample acknowledgement submitted!</p> }
+        }
+        @case ('if') {
+          <button type="button" (click)="showAlert.set(!showAlert())">Toggle alert</button>
+          @if (showAlert()) {
+            <div class="lab-demo-card lab-urgent" data-testid="demo-effect">⚠ Water service will pause at 2 PM.</div>
+          } @else {
+            <p data-testid="demo-empty">No active alert — the warning DOM node was removed.</p>
+          }
+        }
+        @case ('for') {
+          <button type="button" (click)="addComplaint()">Add complaint</button>
+          <button type="button" class="lab-outline-button" (click)="complaints.set([])">Clear list</button>
+          <ul class="lab-demo-list" data-testid="demo-effect">
+            @for (item of complaints(); track item.id) {
+              <li>{{ item.id }} · {{ item.title }}</li>
+            } @empty {
+              <li data-testid="demo-empty">No complaints currently assigned.</li>
+            }
+          </ul>
+        }
+        @case ('switch') {
+          <label>View as role
+            <select aria-label="User role" [value]="role()"
+              (change)="role.set($any(readValue($event)))">
+              <option>Resident</option><option>Staff</option><option>Admin</option>
+            </select>
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">
+            @switch (role()) {
+              @case ('Resident') { Resident: submit and track your complaints. }
+              @case ('Staff') { Staff: resolve assigned maintenance jobs. }
+              @case ('Admin') { Admin: review approvals and building KPIs. }
+            }
+          </div>
+        }
+        @case ('hover') {
+          <article class="lab-demo-card lab-hover-target" [appHoverHighlight]="'#dbeafe'"
+            data-testid="demo-effect">
+            Hover over this notice. The reusable directive applies Renderer2 styles.
+          </article>
+        }
+        @case ('priority') {
+          <label>Complaint priority
+            <select aria-label="Complaint priority" [value]="priority()"
+              (change)="priority.set($any(readValue($event)))">
+              <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+          </label>
+          <p><span class="lab-priority-pill" [appPriority]="priority()"
+            data-testid="demo-effect">Priority: {{ priority() }}</span></p>
+        }
+        @case ('uppercase') {
+          <label>Raw complaint title
+            <input aria-label="Complaint title" [value]="complaintTitle()" (input)="complaintTitle.set(readValue($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">{{ complaintTitle() | uppercase }}</div>
+          <small>Unmodified input: {{ complaintTitle() }}</small>
+        }
+        @case ('lowercase') {
+          <label>Raw building name
+            <input aria-label="Building name" [value]="buildingName()" (input)="buildingName.set(readValue($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">{{ buildingName() | lowercase }}</div>
+        }
+        @case ('titlecase') {
+          <label>Raw resident name
+            <input aria-label="Resident name" [value]="residentName()" (input)="residentName.set(readValue($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">{{ residentName() | titlecase }}</div>
+        }
+        @case ('currency') {
+          <label>Maintenance budget
+            <input type="number" min="0" aria-label="Maintenance budget" [value]="amount()"
+              (input)="amount.set(readNumber($event))" />
+          </label>
+          <label>Currency
+            <select aria-label="Currency" [value]="currencyCode()"
+              (change)="currencyCode.set(readValue($event))">
+              <option value="INR">INR</option><option value="USD">USD</option>
+            </select>
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">{{ amount() | currency:currencyCode() }}</div>
+        }
+        @case ('date') {
+          <label>Complaint created on
+            <input type="date" aria-label="Complaint created on" [value]="selectedDate()"
+              (input)="selectedDate.set(readValue($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">
+            Medium: {{ selectedDate() | date:'mediumDate' }}<hr />
+            Full: {{ selectedDate() | date:'fullDate' }}
+          </div>
+        }
+        @case ('percent') {
+          <label>Resolved issues: {{ completion() }}%
+            <input type="range" min="0" max="100" aria-label="Resolved issues"
+              [value]="completion()" (input)="completion.set(readNumber($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">
+            Completion ratio: {{ completion() / 100 | percent:'1.0-0' }}
+            <div class="lab-progress"><div [style.width.%]="completion()"></div></div>
+          </div>
+        }
+        @case ('json') {
+          <label>Complaint status
+            <select aria-label="Complaint status" [value]="complaintStatus()"
+              (change)="complaintStatus.set($any(readValue($event)))">
+              <option>Open</option><option>In Progress</option><option>Resolved</option>
+            </select>
+          </label>
+          <pre class="lab-json" data-testid="demo-effect">{{ complaintObject() | json }}</pre>
+        }
+        @case ('slice') {
+          <label>Show first {{ visibleCount() }} categories
+            <input type="range" min="0" max="6" aria-label="Category count"
+              [value]="visibleCount()" (input)="visibleCount.set(readNumber($event))" />
+          </label>
+          <ul class="lab-demo-list" data-testid="demo-effect">
+            @for (item of categories | slice:0:visibleCount(); track item) {
+              <li>{{ item }}</li>
+            } @empty { <li>No items selected.</li> }
+          </ul>
+        }
+        @case ('chain') {
+          <label>Long maintenance message
+            <input aria-label="Maintenance message" [value]="longMessage()"
+              (input)="longMessage.set(readValue($event))" />
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">{{ longMessage() | slice:0:18 | uppercase }}</div>
+          <small>First slice to 18 characters, then apply uppercase.</small>
+        }
+        @case ('custom') {
+          <label>Internal status
+            <select aria-label="Internal status" [value]="complaintStatus()"
+              (change)="complaintStatus.set($any(readValue($event)))">
+              <option>Open</option><option>In Progress</option><option>Resolved</option>
+            </select>
+          </label>
+          <div class="lab-demo-card" data-testid="demo-effect">
+            Friendly output: {{ complaintStatus() | statusLabel }}
+          </div>
+          <small>Underlying value stays {{ complaintStatus() }}.</small>
+        }
+        @case ('enter') {
+          <button type="button" (click)="visible.set(!visible())">
+            {{ visible() ? 'Remove notice' : 'Add notice' }}
+          </button>
+          @if (visible()) {
+            <article class="lab-demo-card lab-motion-card" animate.enter="lab-enter"
+              data-testid="demo-effect">✅ Notice added with animate.enter</article>
+          }
+        }
+        @case ('leave') {
+          <button type="button" (click)="visible.set(!visible())">
+            {{ visible() ? 'Dismiss notice' : 'Recreate notice' }}
+          </button>
+          @if (visible()) {
+            <article class="lab-demo-card lab-motion-card" animate.leave="lab-leave"
+              data-testid="demo-effect">ℹ Observe the exit before DOM removal</article>
+          } @else { <p>Notice was dismissed.</p> }
+        }
+        @case ('fade') {
+          <button type="button" (click)="active.set(!active())">Toggle fade</button>
+          <article class="lab-demo-card lab-transition lab-fade-card"
+            [class.lab-faded]="active()" data-testid="demo-effect">
+            Same DOM node; only opacity changes.
+          </article>
+        }
+        @case ('slide') {
+          <button type="button" (click)="active.set(!active())">Slide left/right</button>
+          <div class="lab-slide-track">
+            <article class="lab-demo-card lab-transition lab-slide-card"
+              [class.lab-shifted]="active()" data-testid="demo-effect">Staff update</article>
+          </div>
+        }
+        @case ('scale') {
+          <button type="button" (click)="active.set(!active())">Zoom badge</button>
+          <div class="lab-scale-track">
+            <span class="lab-priority-pill lab-priority-high lab-transition lab-scale-card"
+              [class.lab-scaled]="active()" data-testid="demo-effect">Urgent</span>
+          </div>
+        }
+        @case ('hoverlift') {
+          <article class="lab-demo-card lab-hover-card" tabindex="0"
+            data-testid="demo-effect">Lift repair card · Hover with a mouse or focus with Tab</article>
+        }
+        @case ('toast') {
+          <button type="button" (click)="visible.set(!visible())">
+            {{ visible() ? 'Dismiss notification' : 'Show notification' }}
+          </button>
+          @if (visible()) {
+            <div class="lab-toast" role="status" animate.enter="lab-enter"
+              animate.leave="lab-leave" data-testid="demo-effect">
+              ✅ Demo complaint saved (no backend request)
+            </div>
+          }
+        }
+        @case ('stagger') {
+          <button type="button" (click)="replayStagger()">Replay list entrance</button>
+          <ul class="lab-demo-list" data-testid="demo-effect">
+            @for (issue of issues; track (animationRun() + '-' + issue.id); let i = $index) {
+              <li class="lab-stagger" [style.animation-delay.ms]="i * 110">{{ issue.title }}</li>
+            }
+          </ul>
+        }
+        @default {
+          <p>This topic does not have a live implementation yet.</p>
+        }
+      }
+    </section>
+
+    <aside class="lab-code-panel" aria-label="Code explanation">
+      <div class="lab-code-heading"><h2>How it works</h2><span>Angular 20</span></div>
+
+      @if (courseSubtopic(); as active) {
+        @if (active.detailFile) {
+          <p class="lab-mini-label">Subtopic execution detail file</p>
+          <a [href]="active.detailFile" target="_blank" rel="noopener noreferrer">
+            Open this example's dedicated implementation guide ↗</a>
+        }
+      }
+      <p class="lab-mini-label">Relevant commented code</p>
+      <pre><code>{{ lesson.code }}</code></pre>
+
+      @if (courseTopic(); as ct) {
+        <p class="lab-mini-label">Detailed course topic file</p>
+        <a [href]="ct.source" target="_blank" rel="noopener noreferrer">Read the original Markdown lesson ↗</a>
+      }
+      <p class="lab-mini-label">Expected result</p>
+      <p class="lab-expected">{{ lesson.expected }}</p>
+      <div class="lab-tip"><strong>Interview memory hook</strong><p>{{ lesson.memoryHook }}</p></div>
+      <p class="lab-small-note">The snippet is illustrative. The real executable implementation is in
+        <code>lab-demo.html</code> and the TypeScript and CSS files in <code>src/lab/</code>.</p>
+    </aside>
+  </div>
+
+  <nav class="lab-bottom-nav" aria-label="Lesson navigation">
+    @if (chapter(); as current) {
+      @if (courseTopic(); as ct) {
+        <a [routerLink]="['/chapters',current.id,ct.id]">← All {{ ct.name }} subtopics</a>
+        @if (nextCourseSubtopic(); as next) {
+          <a [routerLink]="['/chapters',current.id,ct.id,next.id]" (click)="reset()">
+            Next subtopic: {{ next.name }} →
+          </a>
+        }
+      }
+    } @else {
+      @if (category(); as group) {
+        <a [routerLink]="['/lab', group.id]">← All {{ group.title }} topics</a>
+        @if (nextTopic(); as next) {
+          <a [routerLink]="['/lab', group.id, next.id]" (click)="reset()">
+            Next: {{ next.title }} →
+          </a>
+        }
+      }
+    }
+  </nav>
+} @else {
+  @if (courseSubtopic(); as reading) {
+    <section class="lab-section lab-study-detail" data-testid="reading-detail">
+      <p class="lab-kicker">LEVEL 04 / 04 · COURSE DETAIL</p>
+      <h1>{{ reading.name }}</h1>
+      @if (chapter()?.id === '04') {
+        <p>Chapter 04 Forms has a runnable Angular example for this lab. Open its dedicated
+          execution page to interact with the controls, view Angular state and read the guide.</p>
+        @if (courseTopic(); as formTopic) {
+          <p><a class="lab-primary-link" [routerLink]="['/chapters','04',formTopic.id,reading.id]">
+            Open {{ reading.name }} — Live Forms Execution</a></p>
+        }
+      } @else if (chapter()?.id === '05') {
+        <p>Chapter 05 has an actual Dependency Injection and Services execution for this lab.</p>
+        @if (courseTopic(); as diTopic) {
+          <p><a class="lab-primary-link" [routerLink]="['/chapters','05',diTopic.id,reading.id]">
+            Open {{ reading.name }} — Live DI Execution</a></p>
+        }
+      } @else if (chapter()?.id === '06') {
+        <p>Chapter 06 has an interactive API Integration, RxJS and Signals execution for this lab.</p>
+        @if (courseTopic(); as apiTopic) {
+          <p><a class="lab-primary-link" [routerLink]="['/chapters','06',apiTopic.id,reading.id]">
+            Open {{ reading.name }} — Live Chapter 06 Execution</a></p>
+        }
+      } @else if (chapter()?.id === '07') {
+        <p>Chapter 07 has a dedicated Routing and Navigation execution page with actual Angular routes.</p>
+        @if (courseTopic(); as routingTopic) {
+          <p><a class="lab-primary-link" [routerLink]="['/chapters','07',routingTopic.id,reading.id]">
+            Open {{ reading.name }} — Live Chapter 07 Execution</a></p>
+        }
+      } @else {
+        <p>This subtopic has a published course file, but a runnable Angular demonstration has
+          <strong>not yet been implemented</strong>. Follow the original lesson and its exercises;
+          no successful build or browser execution is being claimed for this topic.</p>
+      }
+      @if (courseTopic(); as ct) {
+        <p><strong>Topic:</strong> {{ ct.name }}</p>
+        <p><strong>Source:</strong> {{ ct.docPath }}</p>
+        <p><a class="lab-primary-link" [href]="reading.detailFile ?? ct.source" target="_blank"
+          rel="noopener noreferrer">Open this lab in the original Markdown course lesson ↗</a></p>
+      }
+      @if (chapter(); as current) {
+        @if (courseTopic(); as ct) {
+          <a [routerLink]="['/chapters',current.id,ct.id]">← Back to subtopics</a>
+        }
+      }
+    </section>
+  } @else {
+    <section class="lab-section">
+      <h1>Execution detail not found</h1>
+      <p>Select a valid chapter, topic and subtopic to continue.</p>
+      <a routerLink="/chapters">Back to chapters</a>
+    </section>
+  }
+}
+

@@ -1,0 +1,33 @@
+/* Chapter 06 — independent responsive learning surface. */
+.api-workspace {display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:1.15rem;margin:1.3rem 0;align-items:start}
+.api-panel,.api-notes {min-width:0;border:1px solid #d8e5f0;background:#fff;border-radius:14px;padding:1.35rem;box-shadow:0 8px 24px #0b395b0d}
+.api-panel-heading {display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+.api-panel-heading h2,.api-notes h2 {margin:0;color:#173a58;font-size:1.2rem}
+.api-panel-heading span {background:#e4f8ed;color:#175e3c;padding:.3rem .7rem;border-radius:99px;font-size:.78rem;font-weight:700}
+.api-instruction {border-left:4px solid #df8d38;background:#fff8e9;padding:1rem;line-height:1.6;border-radius:5px}
+.api-panel p,.api-notes p {line-height:1.6}
+.api-panel label {display:flex;flex-direction:column;gap:.4rem;margin:.75rem 0;font-weight:650;color:#365770}
+.api-panel input,.api-panel select {width:100%;padding:.7rem;font:inherit;border:1px solid #abc0d2;border-radius:8px;color:#183853;background:#fff}
+.api-panel button {border:0;background:#225f91;color:white;padding:.62rem .9rem;border-radius:8px;font:inherit;font-size:.88rem;cursor:pointer}
+.api-panel button:hover {background:#17446a}
+.api-buttons {display:flex;flex-wrap:wrap;gap:.5rem;margin:.85rem 0}
+.api-buttons button {flex:0 1 auto}
+.api-panel button:focus-visible,.api-notes a:focus-visible {outline:3px solid #e29842;outline-offset:2px}
+.api-stats {display:flex;flex-wrap:wrap;gap:.5rem;margin:.85rem 0}
+.api-stats span {background:#eaf3fa;color:#1c527e;border-radius:7px;padding:.45rem .65rem;font-size:.85rem;font-weight:600}
+.api-live {margin-top:1rem;padding:1rem;border-radius:10px;background:#effaf3;color:#245039;border:1px solid #cfe8d8}
+.api-live pre,.api-notes pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:380px;overflow:auto;line-height:1.6;font-size:.83rem;padding:1rem;border-radius:8px}
+.api-live pre {background:#fff;color:#294d37}
+.api-notes {position:sticky;top:1rem}
+.api-notes h3 {font-size:.94rem;margin:1.3rem 0 .45rem}
+.api-notes pre {background:#172d43;color:#eff8ff}
+.api-notes a {overflow-wrap:anywhere}
+.api-notes small,.api-caption {color:#667c90}
+.api-eyebrow {font-size:.77rem;letter-spacing:.04em;color:#5c758b;text-transform:uppercase;font-weight:700}
+.api-trace,.api-stream {border:1px solid #d5e2ec;border-radius:9px;background:#f6f9fd;padding:1rem 1rem 1rem 2rem}
+.api-trace li,.api-stream li {margin:.4rem 0;overflow-wrap:anywhere;font-size:.9rem}
+.api-error {color:#a12626;background:#fff1ee;padding:.6rem;border-radius:8px}
+@media(max-width:880px) {.api-workspace{grid-template-columns:1fr}.api-notes{position:static}}
+@media(max-width:480px) {.api-panel,.api-notes{padding:1rem}.api-buttons button{width:100%}}
+@media(prefers-reduced-motion:reduce){.api-workspace * {scroll-behavior:auto!important}}
+
